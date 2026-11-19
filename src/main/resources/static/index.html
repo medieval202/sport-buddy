@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动伴 · 校园运动智能匹配</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<section class="auth-screen" id="auth-screen">
+    <div class="auth-visual">
+        <div class="brand brand-light">
+            <span class="brand-mark">动</span>
+            <span class="brand-copy">
+                <strong>动伴</strong>
+                <small>Campus Sports Buddy</small>
+            </span>
+        </div>
+        <div class="auth-headline">
+            <span class="eyebrow">让每一次运动，都有同伴</span>
+            <h1>找到节奏相同的<br>校园运动搭子</h1>
+            <p>结合运动偏好、空闲时间、距离、水平与信用分，为你推荐更合拍的队友。</p>
+        </div>
+        <div class="orbit-card orbit-one"><span>🏃</span><strong>夜跑</strong><small>19:30 · 东操场</small></div>
+        <div class="orbit-card orbit-two"><span>🏸</span><strong>羽毛球</strong><small>周末 · 风雨球馆</small></div>
+        <div class="auth-feature-row">
+            <div><strong>5</strong><span>匹配维度</span></div>
+            <div><strong>JWT</strong><span>安全鉴权</span></div>
+            <div><strong>实时</strong><span>消息通知</span></div>
+        </div>
+    </div>
+
+    <div class="auth-panel">
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-auth-tab="login">登录</button>
+                <button class="auth-tab" data-auth-tab="register">注册</button>
+            </div>
+
+            <form id="login-form" class="auth-form">
+                <div class="form-heading">
+                    <span class="eyebrow">WELCOME BACK</span>
+                    <h2>继续你的运动计划</h2>
+                    <p>登录后查看推荐搭子与场地预约。</p>
+                </div>
+                <label>用户名
+                    <input id="login-username" autocomplete="username" value="demo" required>
+                </label>
+                <label>密码
+                    <input id="login-password" type="password" autocomplete="current-password" value="demo123" required>
+                </label>
+                <button class="btn btn-primary btn-wide" type="submit">进入动伴</button>
+                <div class="demo-login">
+                    <span>快速体验</span>
+                    <button type="button" data-demo-user="demo" data-demo-password="demo123">学生端</button>
+                    <button type="button" data-demo-user="admin" data-demo-password="admin123">管理端</button>
+                </div>
+            </form>
+
+            <form id="register-form" class="auth-form hidden">
+                <div class="form-heading">
+                    <span class="eyebrow">JOIN THE TEAM</span>
+                    <h2>创建运动档案</h2>
+                    <p>信息越完整，匹配结果越准确。</p>
+                </div>
+                <div class="form-row">
+                    <label>用户名
+                        <input id="reg-username" minlength="3" required>
+                    </label>
+                    <label>密码
+                        <input id="reg-password" type="password" minlength="6" required>
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>昵称
+                        <input id="reg-display-name" required>
+                    </label>
+                    <label>运动水平
+                        <select id="reg-skill">
+                            <option value="BEGINNER">新手</option>
+                            <option value="INTERMEDIATE" selected>进阶</option>
+                            <option value="ADVANCED">高手</option>
+                        </select>
+                    </label>
+                </div>
+                <label>喜欢的运动 <small>用逗号分隔</small>
+                    <input id="reg-sports" value="跑步,羽毛球" required>
+                </label>
+                <div class="form-row">
+                    <label>所在校区
+                        <input id="reg-zone" value="东区" required>
+                    </label>
+                    <label>空闲时段 <small>MORNING / AFTERNOON / EVENING / WEEKEND</small>
+                        <input id="reg-slots" value="EVENING,WEEKEND" required>
+                    </label>
+                </div>
+                <button class="btn btn-primary btn-wide" type="submit">注册并进入</button>
+            </form>
+        </div>
+        <p class="auth-footnote">原型系统 · 数据存储于内存，重启后恢复演示数据</p>
+    </div>
+</section>
+
+<div class="app-shell hidden" id="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-mark">动</span>
+            <span class="brand-copy">
+                <strong>动伴</strong>
+                <small>Campus Sports Buddy</small>
+            </span>
+        </div>
+
+        <nav class="side-nav">
+            <button class="nav-item active" data-view="discover">
+                <span class="nav-icon">◎</span><span>发现运动</span>
+            </button>
+            <button class="nav-item student-only" data-view="radar">
+                <span class="nav-icon">◈</span><span>雷达匹配</span>
+            </button>
+            <button class="nav-item" data-view="mine">
+                <span class="nav-icon">◫</span><span>我的组队</span>
+            </button>
+            <button class="nav-item" data-view="venues">
+                <span class="nav-icon">⌂</span><span>场地预约</span>
+            </button>
+            <button class="nav-item" data-view="profile">
+                <span class="nav-icon">◉</span><span>个人档案</span>
+            </button>
+            <div class="nav-label admin-only hidden">管理中心</div>
+            <button class="nav-item admin-only hidden" data-view="admin-review">
+                <span class="nav-icon">✓</span><span>活动审核</span>
+                <span class="nav-badge" id="pending-badge">0</span>
+            </button>
+            <button class="nav-item admin-only hidden" data-view="admin-users">
+                <span class="nav-icon">♧</span><span>用户管理</span>
+            </button>
+            <button class="nav-item admin-only hidden" data-view="admin-announcements">
+                <span class="nav-icon">✎</span><span>公告发布</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-user">
+            <div class="avatar" id="side-avatar">同</div>
+            <div>
+                <strong id="side-user-name">用户</strong>
+                <span id="side-user-role">学生</span>
+            </div>
+            <button class="icon-btn" id="logout-btn" title="退出登录">↪</button>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <div>
+                <span class="eyebrow" id="view-eyebrow">DISCOVER</span>
+                <h1 id="view-title">发现运动</h1>
+                <p id="view-subtitle">找到与你合拍的运动搭子</p>
+            </div>
+            <div class="topbar-actions">
+                <div class="live-pill"><span></span>实时通知已连接</div>
+                <div class="credit-pill">信用分 <strong id="top-credit">100</strong></div>
+            </div>
+        </header>
+
+        <section class="view active" id="view-discover">
+            <div class="hero-banner">
+                <div>
+                    <span class="eyebrow">TODAY'S MATCH</span>
+                    <h2>别让好状态，<br>只留在计划里。</h2>
+                    <p>发布运动、发送邀请，或从推荐活动中找到今天的队友。</p>
+                    <button class="btn btn-light" data-action="open-create">＋ 发起运动</button>
+                </div>
+                <div class="hero-score">
+                    <span>智能匹配模型</span>
+                    <div class="score-ring"><strong>100</strong><small>分制</small></div>
+                    <p>偏好 · 时间 · 距离 · 水平 · 信用</p>
+                </div>
+            </div>
+
+            <div class="section-row">
+                <div>
+                    <span class="eyebrow">ANNOUNCEMENTS</span>
+                    <h2 class="section-title">校园公告</h2>
+                </div>
+            </div>
+            <div class="announcement-strip" id="announcement-list"></div>
+
+            <div class="section-row">
+                <div>
+                    <span class="eyebrow">OPEN ACTIVITIES</span>
+                    <h2 class="section-title">正在组队</h2>
+                </div>
+                <div class="filter-row">
+                    <input id="sport-filter" placeholder="筛选运动项目">
+                    <button class="btn btn-outline" id="refresh-activities">刷新</button>
+                </div>
+            </div>
+            <div class="activity-grid" id="activity-grid"></div>
+        </section>
+
+        <section class="view" id="view-radar">
+            <div class="radar-header">
+                <div class="radar-brand">
+                    <div class="radar-logo">📡</div>
+                    <div>
+                        <h2>多维标签运动搭子智能匹配雷达</h2>
+                        <p>8 扇区轮询扫描 · Top-N 动态结算 · 候选锁定与自动补位</p>
+                    </div>
+                </div>
+                <div class="radar-stats">
+                    <div class="r-stat"><b id="stScan">0</b><i>已扫描 / 候选</i></div>
+                    <div class="r-stat"><b id="stBest">--</b><i>最高匹配度</i></div>
+                    <div class="r-stat"><b id="stSector">0/8</b><i>扫描扇区</i></div>
+                </div>
+                <div class="radar-controls">
+                    <button class="r-btn r-btn-primary" id="btnScan" type="button">▶ 启动扫描</button>
+                    <button class="r-btn" id="btnClose" type="button">关闭雷达</button>
+                </div>
+            </div>
+
+            <form id="radar-form" class="radar-layout" onsubmit="return false;">
+                <!-- 左侧：我的运动画像 -->
+                <aside class="r-panel r-profile-panel">
+                    <div class="r-phead"><i class="r-dot"></i><h3>我的多维运动画像</h3><span class="r-tag">已登记</span></div>
+                    <div class="r-pbody r-scroll">
+                        <p class="r-profile-note">匹配标签取自你的注册资料，系统按五维综合匹配度自动排序。</p>
+                        <div class="r-sec">
+                            <label>运动项目</label>
+                            <div id="radar-profile-sports" class="r-profile-tags"></div>
+                        </div>
+                        <div class="r-sec">
+                            <label>技术水平</label>
+                            <strong id="radar-profile-skill" class="r-profile-value">--</strong>
+                        </div>
+                        <div class="r-sec">
+                            <label>可约时段</label>
+                            <div id="radar-profile-times" class="r-profile-tags"></div>
+                        </div>
+                        <div class="r-sec">
+                            <label>校区与登记位置</label>
+                            <strong id="radar-profile-zone" class="r-profile-value">--</strong>
+                            <small id="radar-profile-location" class="r-hint">--</small>
+                        </div>
+                        <button type="button" class="r-btn r-btn-ghost r-profile-edit" data-view="profile">前往个人档案修改标签</button>
+                        <div class="r-divider"></div>
+                        <div class="r-sec">
+                            <label>扫描半径（km）</label>
+                            <div class="r-range-row">
+                                <input type="range" id="radar-radius-range" min="0.5" max="20" step="0.5" value="5">
+                                <b id="lbRadius">5 km</b>
+                            </div>
+                            <input id="radar-radius" type="hidden" value="5">
+                        </div>
+                        <div class="r-sec">
+                            <label>Top-N 数量</label>
+                            <select id="radar-top-n" class="r-select">
+                                <option>3</option><option selected>5</option><option>8</option><option>10</option>
+                            </select>
+                        </div>
+                        <div class="r-sec r-sec-inline">
+                            <label class="r-switch">
+                                <input id="radar-simulation" type="checkbox" checked>
+                                <span>启用演示候选在线</span>
+                            </label>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- 中间：雷达画布 -->
+                <section class="r-panel r-radar-panel">
+                    <div class="r-phead">
+                        <i class="r-dot"></i>
+                        <h3>实时匹配雷达 · 扫描候选池</h3>
+                        <span class="r-tag" id="radarTag">IDLE</span>
+                    </div>
+                    <div class="radar-wrap">
+                        <canvas id="radar-canvas"></canvas>
+                        <div class="r-tooltip" id="r-tip"></div>
+                    </div>
+                    <div class="radar-tools">
+                        <div class="r-mini">扫描速度
+                            <input type="range" id="rSpeed" min="0.3" max="3" step="0.1" value="1.1">
+                            <b id="lbSpeed">1.1×</b>
+                        </div>
+                        <div class="r-legend">
+                            <span><i style="background:var(--r-cy)"></i>≥85 极佳</span>
+                            <span><i style="background:var(--r-bl)"></i>70-85 良好</span>
+                            <span><i style="background:var(--r-am)"></i>55-70 一般</span>
+                            <span><i style="background:var(--r-rd)"></i>&lt;55 偏低</span>
+                        </div>
+                    </div>
+                    <div class="r-log" id="r-log"></div>
+                </section>
+
+                <!-- 右侧：Top-N 榜单 -->
+                <aside class="r-panel r-rank-panel">
+                    <div class="r-phead">
+                        <i class="r-dot" style="background:var(--r-am);box-shadow:0 0 10px var(--r-am)"></i>
+                        <h3>Top-N 智能推荐榜</h3>
+                        <span class="r-tag" id="radar-state-chip">IDLE</span>
+                    </div>
+                    <div class="r-rank-list" id="radar-candidate-list">
+                        <div class="r-empty">📡 启动雷达后展示 Top-N 候选<br>光束扫过目标后自动入榜</div>
+                    </div>
+                </aside>
+            </form>
+
+            <div class="radar-actions" id="radar-actions"></div>
+        </section>
+
+        <!-- 雷达候选详情弹窗 -->
+        <div class="r-mask" id="r-mask">
+            <div class="r-modal" id="r-modal"></div>
+        </div>
+
+        <section class="view" id="view-mine">
+            <div class="section-intro">
+                <div>
+                    <span class="eyebrow">MY SCHEDULE</span>
+                    <h2>我的运动日程</h2>
+                    <p>查看我发起、参与和等待审核的活动。</p>
+                </div>
+                <button class="btn btn-primary" data-action="open-create">＋ 发起运动</button>
+            </div>
+            <div class="activity-grid" id="mine-grid"></div>
+        </section>
+
+        <section class="view" id="view-venues">
+            <div class="section-intro">
+                <div>
+                    <span class="eyebrow">VENUE BOOKING</span>
+                    <h2>场地预约</h2>
+                    <p>系统会锁定场地记录并检查时间重叠，避免重复预约。</p>
+                </div>
+            </div>
+            <div class="venue-layout">
+                <div class="panel booking-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">NEW BOOKING</span>
+                            <h3>预约一个时段</h3>
+                        </div>
+                    </div>
+                    <form id="reservation-form" class="stack-form">
+                        <label>选择场地
+                            <select id="reservation-venue" required></select>
+                        </label>
+                        <label>预约日期
+                            <input id="reservation-date" type="date" required>
+                        </label>
+                        <div class="form-row">
+                            <label>开始时间
+                                <input id="reservation-start" type="time" value="18:00" required>
+                            </label>
+                            <label>结束时间
+                                <input id="reservation-end" type="time" value="19:30" required>
+                            </label>
+                        </div>
+                        <button class="btn btn-primary btn-wide" type="submit">确认预约</button>
+                    </form>
+                    <div class="busy-panel">
+                        <strong>当日已占用时段</strong>
+                        <div id="busy-slots" class="busy-slots"><span>选择场地和日期后查看</span></div>
+                    </div>
+                </div>
+                <div class="stack-col">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div>
+                                <span class="eyebrow">AVAILABLE VENUES</span>
+                                <h3>可用场地</h3>
+                            </div>
+                        </div>
+                        <div id="venue-list" class="venue-list"></div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div>
+                                <span class="eyebrow">MY RESERVATIONS</span>
+                                <h3>我的预约</h3>
+                            </div>
+                        </div>
+                        <div id="reservation-list" class="reservation-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="view" id="view-profile">
+            <div class="section-intro">
+                <div>
+                    <span class="eyebrow">MY PROFILE</span>
+                    <h2>完善运动档案</h2>
+                    <p>这些字段会直接影响搭子推荐结果。</p>
+                </div>
+                <div class="profile-score-box">
+                    <span>当前信用分</span>
+                    <strong id="profile-credit">100</strong>
+                    <small>信用越高，推荐排序越靠前</small>
+                </div>
+            </div>
+            <form id="profile-form" class="panel profile-form">
+                <div class="form-row">
+                    <label>昵称
+                        <input id="profile-name" required>
+                    </label>
+                    <label>用户名
+                        <input id="profile-username" disabled>
+                    </label>
+                </div>
+                <div class="form-row">
+                    <label>运动水平
+                        <select id="profile-skill">
+                            <option value="BEGINNER">新手</option>
+                            <option value="INTERMEDIATE">进阶</option>
+                            <option value="ADVANCED">高手</option>
+                        </select>
+                    </label>
+                    <label>所在校区
+                        <input id="profile-zone" required>
+                    </label>
+                </div>
+                <label>运动偏好 <small>用逗号分隔，如：跑步,羽毛球</small>
+                    <input id="profile-sports" required>
+                </label>
+                <label>可用时段 <small>MORNING / AFTERNOON / EVENING / WEEKEND</small>
+                    <input id="profile-slots" required>
+                </label>
+                <div class="form-row">
+                    <label>纬度
+                        <input id="profile-latitude" type="number" step="0.0001" required>
+                    </label>
+                    <label>经度
+                        <input id="profile-longitude" type="number" step="0.0001" required>
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">保存档案</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="view" id="view-admin-review">
+            <div class="section-intro">
+                <div>
+                    <span class="eyebrow">ACTIVITY REVIEW</span>
+                    <h2>活动审核</h2>
+                    <p>审核学生提交的运动活动，通过后才会进入公开组队区。</p>
+                </div>
+            </div>
+            <div id="pending-list" class="review-list"></div>
+        </section>
+
+        <section class="view" id="view-admin-users">
+            <div class="section-intro">
+                <div>
+                    <span class="eyebrow">USER MANAGEMENT</span>
+                    <h2>用户与信用管理</h2>
+                    <p>调整学生信用分或禁用异常账户。</p>
+                </div>
+            </div>
+            <div class="panel table-panel">
+                <table>
+                    <thead>
+                    <tr><th>学生</th><th>运动偏好</th><th>水平</th><th>信用分</th><th>状态</th><th>操作</th></tr>
+                    </thead>
+                    <tbody id="user-table"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="view" id="view-admin-announcements">
+            <div class="section-intro">
+                <div>
+                    <span class="eyebrow">ANNOUNCEMENTS</span>
+                    <h2>公告发布</h2>
+                    <p>发布后会通过 WebSocket 实时推送给在线用户。</p>
+                </div>
+            </div>
+            <div class="announcement-admin-layout">
+                <form id="announcement-form" class="panel stack-form">
+                    <label>公告标题
+                        <input id="announcement-title" maxlength="120" required>
+                    </label>
+                    <label>公告内容
+                        <textarea id="announcement-content" rows="7" maxlength="2000" required></textarea>
+                    </label>
+                    <button class="btn btn-primary" type="submit">发布公告</button>
+                </form>
+                <div class="panel">
+                    <div class="panel-heading">
+                        <div>
+                            <span class="eyebrow">PUBLISHED</span>
+                            <h3>已发布公告</h3>
+                        </div>
+                    </div>
+                    <div id="admin-announcement-list" class="announcement-admin-list"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div class="modal-backdrop hidden" id="activity-modal">
+    <div class="modal">
+        <button class="modal-close" data-action="close-modal">×</button>
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">NEW ACTIVITY</span>
+                <h2>发起一项运动</h2>
+                <p>提交后需要管理员审核，通过后其他同学即可加入。</p>
+            </div>
+        </div>
+        <form id="activity-form" class="stack-form">
+            <div class="form-row">
+                <label>活动名称
+                    <input id="activity-title" maxlength="100" placeholder="如：东操场夜跑搭子" required>
+                </label>
+                <label>运动项目
+                    <input id="activity-sport" placeholder="如：跑步" required>
+                </label>
+            </div>
+            <label>活动说明
+                <textarea id="activity-description" rows="3" maxlength="1000" placeholder="告诉搭子活动强度、装备和集合方式"></textarea>
+            </label>
+            <div class="form-row">
+                <label>校区区域
+                    <input id="activity-zone" value="东区" required>
+                </label>
+                <label>集合地点
+                    <input id="activity-location" placeholder="如：东操场南门" required>
+                </label>
+            </div>
+            <div class="form-row">
+                <label>开始时间
+                    <input id="activity-start" type="datetime-local" required>
+                </label>
+                <label>结束时间
+                    <input id="activity-end" type="datetime-local" required>
+                </label>
+            </div>
+            <div class="form-row three">
+                <label>人数上限
+                    <input id="activity-max" type="number" min="2" max="100" value="6" required>
+                </label>
+                <label>建议水平
+                    <select id="activity-skill">
+                        <option value="BEGINNER">新手</option>
+                        <option value="INTERMEDIATE" selected>进阶</option>
+                        <option value="ADVANCED">高手</option>
+                    </select>
+                </label>
+                <label>最低信用分
+                    <input id="activity-credit" type="number" min="0" max="100" value="60" required>
+                </label>
+            </div>
+            <div class="form-row">
+                <label>纬度
+                    <input id="activity-latitude" type="number" step="0.0001" value="31.2310" required>
+                </label>
+                <label>经度
+                    <input id="activity-longitude" type="number" step="0.0001" value="121.4730" required>
+                </label>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-ghost" type="button" data-action="close-modal">取消</button>
+                <button class="btn btn-primary" type="submit">提交审核</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-backdrop hidden" id="match-modal">
+    <div class="modal match-modal">
+        <button class="modal-close" data-action="close-modal">×</button>
+        <div class="panel-heading">
+            <div>
+                <span class="eyebrow">SMART MATCHING</span>
+                <h2 id="match-title">智能搭子推荐</h2>
+                <p>评分由偏好、时间、距离、水平和信用分综合计算。</p>
+            </div>
+        </div>
+        <div class="match-legend">
+            <span>运动 35</span><span>时间 25</span><span>距离 20</span><span>水平 10</span><span>信用 10</span>
+        </div>
+        <div id="match-list" class="match-list"></div>
+    </div>
+</div>
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>
