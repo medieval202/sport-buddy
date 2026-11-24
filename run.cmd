@@ -1,6 +1,7 @@
 @echo off
 setlocal
-set "APP_JAR=%~dp0sports-buddy-0.1.0.jar"
+set "APP_JAR=%~dp0target\sports-buddy-0.1.0.jar"
+if not exist "%APP_JAR%" set "APP_JAR=%~dp0sports-buddy-0.1.0.jar"
 set "APP_PORT=8081"
 
 if /I "%~1"=="--check" goto check_ok
